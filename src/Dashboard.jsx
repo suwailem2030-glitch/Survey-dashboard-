@@ -2,7 +2,6 @@ import { useState, useMemo, useEffect } from "react";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, Legend,
-  ScatterChart, Scatter, ZAxis, LabelList,
 } from "recharts";
 
 // ═══ رابط Google Apps Script ═══
@@ -375,18 +374,23 @@ export default function Dashboard() {
         <>
           <SectionTitle icon="📢" text="وعي المنصات — % يعرفونها" />
           <ChartCard>
-            <ResponsiveContainer width="100%" height={320}>
-              <BarChart data={awareness} layout="vertical" margin={{ right: 40, left: 10 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" horizontal={false} />
-                <XAxis type="number" tick={{ fontSize: 11, fill: "#6B7280" }} domain={[0, total]} />
-                <YAxis type="category" dataKey="name" tick={{ fontSize: 13, fill: "#374151", fontWeight: 600 }} width={120} />
-                <Tooltip content={<CustomTooltip />} />
-                <Bar dataKey="value" radius={[0, 6, 6, 0]}>
-                  {awareness.map((a, i) => <Cell key={i} fill={a.color} />)}
-                  <LabelList dataKey="pct" position="right" formatter={v => v + "%"} style={{ fontSize: 11, fill: "#6B7280", fontWeight: 600 }} />
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
+            {awareness.map((a, i) => (
+              <div key={i} style={{ marginBottom: i < awareness.length - 1 ? 14 : 0 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 5 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <span style={{ display: "inline-block", width: 12, height: 12, borderRadius: 4, background: a.color, flexShrink: 0 }} />
+                    <span style={{ fontSize: 14, color: "#111827", fontWeight: 600 }}>{a.name}</span>
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                    <span style={{ fontSize: 11, color: "#9CA3AF" }}>{a.value} مستجيب</span>
+                    <span style={{ fontSize: 14, color: TEAL, fontWeight: 700, minWidth: 40, textAlign: "left" }}>{a.pct}%</span>
+                  </div>
+                </div>
+                <div style={{ height: 12, background: "#F3F4F6", borderRadius: 8, overflow: "hidden" }}>
+                  <div style={{ height: "100%", width: a.pct + "%", background: a.color, borderRadius: 8, transition: "width 0.6s ease" }} />
+                </div>
+              </div>
+            ))}
           </ChartCard>
 
           <SectionTitle icon="❤️" text="المنصة المفضلة" />
@@ -445,67 +449,98 @@ export default function Dashboard() {
       {/* ═══════════ الخريطة الإدراكية ═══════════ */}
       {tab === "perceptual" && (
         <>
-          <SectionTitle icon="🗺️" text="الخريطة الإدراكية" />
-          <p style={{ fontSize: 13, color: "#6B7280", margin: "-8px 0 14px", lineHeight: 1.7 }}>
-            كل نقطة = منصة. الأفقي = جودة المحتوى (يمين أفضل). العمودي = حساسية السعر (فوق = السعر يمنع أكثر).
-          </p>
+          <SectionTitle icon="🗺️" text="الخريطة الإدراكية — Perceptual Map" />
+          <ChartCard>
+            <p style={{ fontSize: 13, color: "#6B7280", margin: "0 0 16px", lineHeight: 1.8, textAlign: "center" }}>
+              كل نقطة تمثل منصة بناءً على تقييم المستجيبين.
+              <br />كل ما كانت المنصة <strong style={{ color: "#059669" }}>أقرب لليمين الأسفل</strong> كانت أفضل.
+            </p>
 
-          {perceptualMap.length < 2 ? (
-            <ChartCard style={{ textAlign: "center", padding: 40 }}>
-              <p style={{ fontSize: 14, color: "#6B7280" }}>تحتاج تقييمات أكثر لعرض الخريطة الإدراكية</p>
-              <p style={{ fontSize: 12, color: "#9CA3AF", marginTop: 4 }}>اجمع ردود إضافية وارجع هنا</p>
-            </ChartCard>
-          ) : (
-            <ChartCard style={{ padding: "16px 8px" }}>
-              <ResponsiveContainer width="100%" height={360}>
-                <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
-                  <XAxis type="number" dataKey="quality" name="الجودة" domain={[0.5, 5.5]}
-                    tick={{ fontSize: 11, fill: "#6B7280" }}
-                    label={{ value: "← جودة أقل    الجودة المدركة    جودة أعلى →", position: "bottom", offset: 0, style: { fontSize: 11, fill: "#9CA3AF" } }}
-                  />
-                  <YAxis type="number" dataKey="price" name="السعر" domain={[0.5, 5.5]}
-                    tick={{ fontSize: 11, fill: "#6B7280" }}
-                    label={{ value: "حساسية السعر ↑", angle: -90, position: "insideLeft", offset: 10, style: { fontSize: 11, fill: "#9CA3AF" } }}
-                  />
-                  <ZAxis type="number" dataKey="n" range={[200, 600]} />
-                  <Tooltip content={({ active, payload }) => {
-                    if (!active || !payload?.length) return null;
-                    const d = payload[0]?.payload;
-                    return (
-                      <div style={{ background: "#1F2937", color: "#fff", padding: "10px 14px", borderRadius: 10, fontSize: 12, direction: "rtl" }}>
-                        <p style={{ margin: 0, fontWeight: 700, fontSize: 14 }}>{d.name}</p>
-                        <p style={{ margin: "4px 0 0" }}>الجودة: {d.quality} / 5</p>
-                        <p style={{ margin: "2px 0 0" }}>حساسية السعر: {d.price} / 5</p>
-                        <p style={{ margin: "2px 0 0", color: "#9CA3AF" }}>عدد التقييمات: {d.n}</p>
-                      </div>
-                    );
-                  }} />
-                  <Scatter data={perceptualMap.filter(p => p.type === "محلية")} name="منصات محلية" fill={TEAL}>
-                    <LabelList dataKey="name" position="top" style={{ fontSize: 11, fontWeight: 700, fill: TEAL }} offset={10} />
-                  </Scatter>
-                  <Scatter data={perceptualMap.filter(p => p.type === "عالمية")} name="منصات عالمية" fill="#6366F1">
-                    <LabelList dataKey="name" position="top" style={{ fontSize: 11, fontWeight: 700, fill: "#6366F1" }} offset={10} />
-                  </Scatter>
-                  <Legend wrapperStyle={{ fontSize: 12 }} />
-                </ScatterChart>
-              </ResponsiveContainer>
+            {/* الخريطة المخصصة */}
+            <div style={{ position: "relative", width: "100%", maxWidth: 500, margin: "0 auto", aspectRatio: "1/1" }}>
 
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginTop: 16 }}>
-                {[
-                  { title: "⭐ الأفضل قيمة", desc: "جودة عالية + سعر مقبول", bg: "#F0FDF4", color: "#059669" },
-                  { title: "💎 بريميوم", desc: "جودة عالية + سعر مرتفع", bg: "#EEF2FF", color: "#6366F1" },
-                  { title: "⚠️ تحتاج تحسين", desc: "جودة أقل + سعر مقبول", bg: "#FFFBEB", color: "#D97706" },
-                  { title: "❌ ضعيفة", desc: "جودة أقل + سعر مرتفع", bg: "#FEF2F2", color: "#EF4444" },
-                ].map((q, i) => (
-                  <div key={i} style={{ padding: "10px 12px", borderRadius: 10, background: q.bg }}>
-                    <p style={{ fontSize: 12, fontWeight: 700, color: q.color, margin: "0 0 2px" }}>{q.title}</p>
-                    <p style={{ fontSize: 10.5, color: "#6B7280", margin: 0 }}>{q.desc}</p>
-                  </div>
-                ))}
+              {/* الأرباع الأربعة */}
+              <div style={{ position: "absolute", top: 0, right: 0, width: "50%", height: "50%", background: "#EEF2FF", borderRadius: "0 14px 0 0", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", opacity: 0.7 }}>
+                <span style={{ fontSize: 18 }}>💎</span>
+                <span style={{ fontSize: 11, fontWeight: 700, color: "#6366F1" }}>بريميوم</span>
+                <span style={{ fontSize: 9, color: "#6B7280" }}>جودة عالية + سعر مرتفع</span>
               </div>
-            </ChartCard>
-          )}
+              <div style={{ position: "absolute", top: 0, left: 0, width: "50%", height: "50%", background: "#FEF2F2", borderRadius: "14px 0 0 0", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", opacity: 0.7 }}>
+                <span style={{ fontSize: 18 }}>❌</span>
+                <span style={{ fontSize: 11, fontWeight: 700, color: "#EF4444" }}>ضعيفة</span>
+                <span style={{ fontSize: 9, color: "#6B7280" }}>جودة أقل + سعر مرتفع</span>
+              </div>
+              <div style={{ position: "absolute", bottom: 0, right: 0, width: "50%", height: "50%", background: "#F0FDF4", borderRadius: "0 0 14px 0", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", opacity: 0.7 }}>
+                <span style={{ fontSize: 18 }}>⭐</span>
+                <span style={{ fontSize: 11, fontWeight: 700, color: "#059669" }}>الأفضل قيمة</span>
+                <span style={{ fontSize: 9, color: "#6B7280" }}>جودة عالية + سعر مقبول</span>
+              </div>
+              <div style={{ position: "absolute", bottom: 0, left: 0, width: "50%", height: "50%", background: "#FFFBEB", borderRadius: "0 0 0 14px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", opacity: 0.7 }}>
+                <span style={{ fontSize: 18 }}>⚠️</span>
+                <span style={{ fontSize: 11, fontWeight: 700, color: "#D97706" }}>تحتاج تحسين</span>
+                <span style={{ fontSize: 9, color: "#6B7280" }}>جودة أقل + سعر مقبول</span>
+              </div>
+
+              {/* خطوط المحاور */}
+              <div style={{ position: "absolute", top: 0, bottom: 0, left: "50%", width: 2, background: "#D1D5DB", zIndex: 1 }} />
+              <div style={{ position: "absolute", left: 0, right: 0, top: "50%", height: 2, background: "#D1D5DB", zIndex: 1 }} />
+
+              {/* نقاط المنصات */}
+              {perceptualMap.map((p, i) => {
+                const xPct = ((p.quality - 0.5) / 5) * 100;
+                const yPct = ((p.price - 0.5) / 5) * 100;
+                return (
+                  <div key={i} style={{
+                    position: "absolute",
+                    right: xPct + "%",
+                    bottom: (100 - yPct) + "%",
+                    transform: "translate(50%, 50%)",
+                    zIndex: 2,
+                    display: "flex", flexDirection: "column", alignItems: "center",
+                  }}>
+                    <span style={{
+                      fontSize: 11, fontWeight: 700,
+                      color: p.type === "محلية" ? TEAL : "#6366F1",
+                      background: "#fff", padding: "1px 6px", borderRadius: 6,
+                      border: "1px solid " + (p.type === "محلية" ? TEAL : "#6366F1"),
+                      whiteSpace: "nowrap", marginBottom: 2,
+                    }}>{p.name}</span>
+                    <div style={{
+                      width: 18 + p.n * 2, height: 18 + p.n * 2, maxWidth: 40, maxHeight: 40,
+                      borderRadius: "50%",
+                      background: p.type === "محلية" ? TEAL : "#6366F1",
+                      opacity: 0.8,
+                      border: "3px solid #fff",
+                      boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
+                    }} />
+                  </div>
+                );
+              })}
+
+              {/* تسميات المحاور */}
+              <div style={{ position: "absolute", bottom: -24, left: 0, right: 0, display: "flex", justifyContent: "space-between", fontSize: 10, color: "#9CA3AF" }}>
+                <span>جودة أقل ←</span>
+                <span style={{ fontWeight: 600, color: "#6B7280" }}>جودة المحتوى</span>
+                <span>→ جودة أعلى</span>
+              </div>
+              <div style={{ position: "absolute", top: 0, bottom: 0, right: -8, display: "flex", flexDirection: "column", justifyContent: "space-between", fontSize: 10, color: "#9CA3AF", writingMode: "vertical-rl" }}>
+                <span>السعر يمنع أكثر ↑</span>
+                <span>↓ السعر مقبول</span>
+              </div>
+            </div>
+
+            {/* دليل الألوان */}
+            <div style={{ display: "flex", justifyContent: "center", gap: 20, marginTop: 36 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <div style={{ width: 14, height: 14, borderRadius: "50%", background: TEAL }} />
+                <span style={{ fontSize: 12, color: "#374151" }}>منصات محلية</span>
+              </div>
+              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <div style={{ width: 14, height: 14, borderRadius: "50%", background: "#6366F1" }} />
+                <span style={{ fontSize: 12, color: "#374151" }}>منصات عالمية</span>
+              </div>
+            </div>
+          </ChartCard>
 
           <SectionTitle icon="📋" text="جدول التقييمات" />
           <ChartCard style={{ padding: "12px 8px", overflow: "auto" }}>
