@@ -379,7 +379,7 @@ export default function Dashboard() {
               <BarChart data={awareness} layout="vertical" margin={{ right: 40, left: 10 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" horizontal={false} />
                 <XAxis type="number" tick={{ fontSize: 11, fill: "#6B7280" }} domain={[0, total]} />
-                <YAxis type="category" dataKey="name" tick={{ fontSize: 12, fill: "#374151", fontWeight: 600 }} width={80} />
+                <YAxis type="category" dataKey="name" tick={{ fontSize: 13, fill: "#374151", fontWeight: 600 }} width={120} />
                 <Tooltip content={<CustomTooltip />} />
                 <Bar dataKey="value" radius={[0, 6, 6, 0]}>
                   {awareness.map((a, i) => <Cell key={i} fill={a.color} />)}
@@ -391,18 +391,30 @@ export default function Dashboard() {
 
           <SectionTitle icon="❤️" text="المنصة المفضلة" />
           <ChartCard>
-            <ResponsiveContainer width="100%" height={260}>
+            <ResponsiveContainer width="100%" height={300}>
               <PieChart>
-                <Pie data={favorites} cx="50%" cy="50%" outerRadius={95} dataKey="value" paddingAngle={2} stroke="none"
-                  label={({ name, pct }) => name + " " + pct + "%"}>
+                <Pie data={favorites} cx="50%" cy="50%" innerRadius={50} outerRadius={90} dataKey="value" paddingAngle={3} stroke="none">
                   {favorites.map((f, i) => {
                     const pm = PLATFORM_LIST.find(p => p.id === f.name);
                     return <Cell key={i} fill={pm?.color || COLORS_PIE[i % COLORS_PIE.length]} />;
                   })}
                 </Pie>
                 <Tooltip content={<CustomTooltip />} />
+                <Legend formatter={(v) => <span style={{ fontSize: 12, color: "#374151" }}>{v}</span>} />
               </PieChart>
             </ResponsiveContainer>
+            {/* النسب تحت الرسم */}
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "center", marginTop: 8 }}>
+              {favorites.map((f, i) => {
+                const pm = PLATFORM_LIST.find(p => p.id === f.name);
+                return (
+                  <div key={i} style={{ padding: "6px 12px", borderRadius: 8, background: "#F9FAFB", textAlign: "center" }}>
+                    <span style={{ fontSize: 16, fontWeight: 800, color: pm?.color || TEAL }}>{f.pct}%</span>
+                    <span style={{ fontSize: 11, color: "#6B7280", marginRight: 4 }}> {f.name}</span>
+                  </div>
+                );
+              })}
+            </div>
           </ChartCard>
 
           {ithraaPromo.total > 0 && (
