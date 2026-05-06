@@ -82,8 +82,8 @@ export default function Dashboard() {
 
   // ═══ تحليل: الاستعداد للدفع ═══
   const monthly = useMemo(() => {
-    const order = ["0 ريال — لا أنوي الدفع", "1 – 30 ريال", "31 – 60 ريال", "61 – 100 ريال", "101 – 150 ريال", "أكثر من 150 ريال"];
-    const labels = ["0 ر.س", "1-30", "31-60", "61-100", "101-150", "+150"];
+    const order = ["1 – 30 ريال", "31 – 60 ريال", "61 – 100 ريال", "101 – 150 ريال", "أكثر من 150 ريال"];
+    const labels = ["1-30", "31-60", "61-100", "101-150", "+150"];
     const counts = {};
     order.forEach(o => { counts[o] = 0; });
     rawData.forEach(row => {
@@ -492,9 +492,9 @@ export default function Dashboard() {
                 return (
                   <div key={i} style={{
                     position: "absolute",
-                    right: xPct + "%",
-                    bottom: (100 - yPct) + "%",
-                    transform: "translate(50%, 50%)",
+                    left: xPct + "%",
+                    top: (100 - yPct) + "%",
+                    transform: "translate(-50%, -50%)",
                     zIndex: 2,
                     display: "flex", flexDirection: "column", alignItems: "center",
                   }}>
@@ -519,13 +519,13 @@ export default function Dashboard() {
 
               {/* تسميات المحاور */}
               <div style={{ position: "absolute", bottom: -24, left: 0, right: 0, display: "flex", justifyContent: "space-between", fontSize: 10, color: "#9CA3AF" }}>
-                <span>جودة أقل ←</span>
+                <span>← جودة أقل</span>
                 <span style={{ fontWeight: 600, color: "#6B7280" }}>جودة المحتوى</span>
-                <span>→ جودة أعلى</span>
+                <span>جودة أعلى →</span>
               </div>
-              <div style={{ position: "absolute", top: 0, bottom: 0, right: -8, display: "flex", flexDirection: "column", justifyContent: "space-between", fontSize: 10, color: "#9CA3AF", writingMode: "vertical-rl" }}>
-                <span>السعر يمنع أكثر ↑</span>
-                <span>↓ السعر مقبول</span>
+              <div style={{ position: "absolute", top: 0, bottom: 0, left: -8, display: "flex", flexDirection: "column", justifyContent: "space-between", fontSize: 10, color: "#9CA3AF", writingMode: "vertical-rl" }}>
+                <span>↑ السعر يمنع أكثر</span>
+                <span>السعر مقبول ↓</span>
               </div>
             </div>
 
