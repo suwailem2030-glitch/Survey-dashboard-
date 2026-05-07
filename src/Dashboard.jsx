@@ -28,6 +28,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [lastUpdate, setLastUpdate] = useState(null);
+  const [mapFilter, setMapFilter] = useState([]);
 
   // ═══ جلب البيانات من Google Sheets ═══
   const fetchData = async () => {
@@ -456,29 +457,60 @@ export default function Dashboard() {
               <br />كل ما كانت المنصة <strong style={{ color: "#059669" }}>أقرب لليمين الأسفل</strong> كانت أفضل.
             </p>
 
-            {/* الخريطة المخصصة */}
+            {/* فلتر المنصات */}
+            <div style={{ marginBottom: 16 }}>
+              <p style={{ fontSize: 12, fontWeight: 600, color: "#6B7280", marginBottom: 8 }}>فلتر المنصات: (اضغط لإظهار/إخفاء)</p>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                {perceptualMap.map((p, i) => {
+                  const isOn = mapFilter.length === 0 || mapFilter.includes(p.name);
+                  return (
+                    <button key={i} onClick={() => {
+                      if (mapFilter.length === 0) {
+                        setMapFilter([p.name]);
+                      } else if (mapFilter.includes(p.name)) {
+                        const next = mapFilter.filter(x => x !== p.name);
+                        setMapFilter(next);
+                      } else {
+                        setMapFilter([...mapFilter, p.name]);
+                      }
+                    }} style={{
+                      padding: "5px 12px", borderRadius: 8, fontSize: 12, fontWeight: 600,
+                      border: "2px solid " + (isOn ? p.color : "#E5E7EB"),
+                      background: isOn ? (p.type === "محلية" ? "#F0FDFA" : "#EEF2FF") : "#F9FAFB",
+                      color: isOn ? p.color : "#9CA3AF",
+                      cursor: "pointer", fontFamily: "inherit",
+                    }}>{p.name}</button>
+                  );
+                })}
+                {mapFilter.length > 0 && (
+                  <button onClick={() => setMapFilter([])} style={{
+                    padding: "5px 12px", borderRadius: 8, fontSize: 11, fontWeight: 600,
+                    border: "1.5px solid #E5E7EB", background: "#fff", color: "#6B7280",
+                    cursor: "pointer", fontFamily: "inherit",
+                  }}>الكل ↺</button>
+                )}
+              </div>
+            </div>
+
+            {/* الخريطة */}
             <div style={{ position: "relative", width: "100%", maxWidth: 500, margin: "0 auto", aspectRatio: "1/1" }}>
 
               {/* الأرباع الأربعة */}
               <div style={{ position: "absolute", top: 0, right: 0, width: "50%", height: "50%", background: "#EEF2FF", borderRadius: "0 14px 0 0", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", opacity: 0.7 }}>
                 <span style={{ fontSize: 18 }}>💎</span>
                 <span style={{ fontSize: 11, fontWeight: 700, color: "#6366F1" }}>بريميوم</span>
-                <span style={{ fontSize: 9, color: "#6B7280" }}>جودة عالية + سعر مرتفع</span>
               </div>
               <div style={{ position: "absolute", top: 0, left: 0, width: "50%", height: "50%", background: "#FEF2F2", borderRadius: "14px 0 0 0", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", opacity: 0.7 }}>
                 <span style={{ fontSize: 18 }}>❌</span>
                 <span style={{ fontSize: 11, fontWeight: 700, color: "#EF4444" }}>ضعيفة</span>
-                <span style={{ fontSize: 9, color: "#6B7280" }}>جودة أقل + سعر مرتفع</span>
               </div>
               <div style={{ position: "absolute", bottom: 0, right: 0, width: "50%", height: "50%", background: "#F0FDF4", borderRadius: "0 0 14px 0", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", opacity: 0.7 }}>
                 <span style={{ fontSize: 18 }}>⭐</span>
                 <span style={{ fontSize: 11, fontWeight: 700, color: "#059669" }}>الأفضل قيمة</span>
-                <span style={{ fontSize: 9, color: "#6B7280" }}>جودة عالية + سعر مقبول</span>
               </div>
               <div style={{ position: "absolute", bottom: 0, left: 0, width: "50%", height: "50%", background: "#FFFBEB", borderRadius: "0 0 0 14px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", opacity: 0.7 }}>
                 <span style={{ fontSize: 18 }}>⚠️</span>
                 <span style={{ fontSize: 11, fontWeight: 700, color: "#D97706" }}>تحتاج تحسين</span>
-                <span style={{ fontSize: 9, color: "#6B7280" }}>جودة أقل + سعر مقبول</span>
               </div>
 
               {/* خطوط المحاور */}
@@ -486,7 +518,9 @@ export default function Dashboard() {
               <div style={{ position: "absolute", left: 0, right: 0, top: "50%", height: 2, background: "#D1D5DB", zIndex: 1 }} />
 
               {/* نقاط المنصات */}
-              {perceptualMap.map((p, i) => {
+              {perceptualMap
+                .filter(p => mapFilter.length === 0 || mapFilter.includes(p.name))
+                .map((p, i) => {
                 const xPct = ((p.quality - 0.5) / 5) * 100;
                 const yPct = ((p.price - 0.5) / 5) * 100;
                 return (
@@ -521,11 +555,11 @@ export default function Dashboard() {
               <div style={{ position: "absolute", bottom: -24, left: 0, right: 0, display: "flex", justifyContent: "space-between", fontSize: 10, color: "#9CA3AF" }}>
                 <span>← جودة أقل</span>
                 <span style={{ fontWeight: 600, color: "#6B7280" }}>جودة المحتوى</span>
-                <span>جودة أعلى →</span>
+                <span>جودة عالية →</span>
               </div>
               <div style={{ position: "absolute", top: 0, bottom: 0, left: -8, display: "flex", flexDirection: "column", justifyContent: "space-between", fontSize: 10, color: "#9CA3AF", writingMode: "vertical-rl" }}>
-                <span>↑ السعر يمنع أكثر</span>
-                <span>السعر مقبول ↓</span>
+                <span>↑ قابلية للاشتراك أقل</span>
+                <span>قابلية للاشتراك أعلى ↓</span>
               </div>
             </div>
 
