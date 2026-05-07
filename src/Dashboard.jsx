@@ -493,7 +493,7 @@ export default function Dashboard() {
             </div>
 
             {/* الخريطة */}
-            <div style={{ position: "relative", width: "100%", maxWidth: 500, margin: "40px auto 40px", aspectRatio: "1/1" }}>
+            <div style={{ position: "relative", width: "100%", maxWidth: 500, margin: "16px auto 20px", aspectRatio: "1/1" }}>
 
               {/* الأرباع الأربعة */}
               <div style={{ position: "absolute", top: 0, right: 0, width: "50%", height: "50%", background: "#EEF2FF", borderRadius: "0 14px 0 0", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", opacity: 0.7 }}>
@@ -551,16 +551,20 @@ export default function Dashboard() {
                 );
               })}
 
-              {/* تسميات المحاور */}
-              {/* الأسفل: جودة المحتوى */}
-              <div style={{ position: "absolute", bottom: -30, left: 0, right: 0, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span style={{ fontSize: 13, fontWeight: 700, color: "#EF4444" }}>جودة أقل</span>
-                <span style={{ fontSize: 13, fontWeight: 700, color: "#059669" }}>جودة عالية</span>
+              {/* تسميات على المحور العمودي (الخط اللي بالنص من فوق لتحت) */}
+              <div style={{ position: "absolute", top: 6, left: "50%", transform: "translateX(-50%)", zIndex: 3, background: "#fff", padding: "2px 10px", borderRadius: 6, border: "1px solid #D1D5DB" }}>
+                <span style={{ fontSize: 12, fontWeight: 700, color: "#059669" }}>قابلية اشتراك أعلى</span>
               </div>
-              {/* اليسار: قابلية الاشتراك */}
-              <div style={{ position: "absolute", top: -30, left: 0, right: 0, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span style={{ fontSize: 13, fontWeight: 700, color: "#059669" }}>قابلية اشتراك أعلى</span>
-                <span style={{ fontSize: 13, fontWeight: 700, color: "#EF4444" }}>قابلية اشتراك أقل</span>
+              <div style={{ position: "absolute", bottom: 6, left: "50%", transform: "translateX(-50%)", zIndex: 3, background: "#fff", padding: "2px 10px", borderRadius: 6, border: "1px solid #D1D5DB" }}>
+                <span style={{ fontSize: 12, fontWeight: 700, color: "#EF4444" }}>قابلية اشتراك أقل</span>
+              </div>
+
+              {/* تسميات على المحور الأفقي (الخط اللي بالنص من يمين ليسار) */}
+              <div style={{ position: "absolute", right: 6, top: "50%", transform: "translateY(-50%)", zIndex: 3, background: "#fff", padding: "2px 10px", borderRadius: 6, border: "1px solid #D1D5DB" }}>
+                <span style={{ fontSize: 12, fontWeight: 700, color: "#059669" }}>جودة عالية</span>
+              </div>
+              <div style={{ position: "absolute", left: 6, top: "50%", transform: "translateY(-50%)", zIndex: 3, background: "#fff", padding: "2px 10px", borderRadius: 6, border: "1px solid #D1D5DB" }}>
+                <span style={{ fontSize: 12, fontWeight: 700, color: "#EF4444" }}>جودة أقل</span>
               </div>
             </div>
 
