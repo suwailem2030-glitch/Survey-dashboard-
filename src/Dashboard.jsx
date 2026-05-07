@@ -461,7 +461,7 @@ export default function Dashboard() {
             <div style={{ marginBottom: 16 }}>
               <p style={{ fontSize: 12, fontWeight: 600, color: "#6B7280", marginBottom: 8 }}>فلتر المنصات: (اضغط لإظهار/إخفاء)</p>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                {perceptualMap.map((p, i) => {
+                {[...perceptualMap.filter(p => p.type === "محلية"), ...perceptualMap.filter(p => p.type === "عالمية")].map((p, i) => {
                   const isOn = mapFilter.length === 0 || mapFilter.includes(p.name);
                   return (
                     <button key={i} onClick={() => {
@@ -493,7 +493,7 @@ export default function Dashboard() {
             </div>
 
             {/* الخريطة */}
-            <div style={{ position: "relative", width: "100%", maxWidth: 500, margin: "0 auto", aspectRatio: "1/1" }}>
+            <div style={{ position: "relative", width: "100%", maxWidth: 500, margin: "40px auto 40px", aspectRatio: "1/1" }}>
 
               {/* الأرباع الأربعة */}
               <div style={{ position: "absolute", top: 0, right: 0, width: "50%", height: "50%", background: "#EEF2FF", borderRadius: "0 14px 0 0", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", opacity: 0.7 }}>
@@ -552,14 +552,15 @@ export default function Dashboard() {
               })}
 
               {/* تسميات المحاور */}
-              <div style={{ position: "absolute", bottom: -24, left: 0, right: 0, display: "flex", justifyContent: "space-between", fontSize: 10, color: "#9CA3AF" }}>
-                <span>← جودة أقل</span>
-                <span style={{ fontWeight: 600, color: "#6B7280" }}>جودة المحتوى</span>
-                <span>جودة عالية →</span>
+              {/* الأسفل: جودة المحتوى */}
+              <div style={{ position: "absolute", bottom: -30, left: 0, right: 0, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span style={{ fontSize: 13, fontWeight: 700, color: "#EF4444" }}>جودة أقل</span>
+                <span style={{ fontSize: 13, fontWeight: 700, color: "#059669" }}>جودة عالية</span>
               </div>
-              <div style={{ position: "absolute", top: 0, bottom: 0, left: -8, display: "flex", flexDirection: "column", justifyContent: "space-between", fontSize: 10, color: "#9CA3AF", writingMode: "vertical-rl" }}>
-                <span>↑ قابلية للاشتراك أقل</span>
-                <span>قابلية للاشتراك أعلى ↓</span>
+              {/* اليسار: قابلية الاشتراك */}
+              <div style={{ position: "absolute", top: -30, left: 0, right: 0, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span style={{ fontSize: 13, fontWeight: 700, color: "#059669" }}>قابلية اشتراك أعلى</span>
+                <span style={{ fontSize: 13, fontWeight: 700, color: "#EF4444" }}>قابلية اشتراك أقل</span>
               </div>
             </div>
 
