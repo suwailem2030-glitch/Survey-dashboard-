@@ -450,11 +450,11 @@ export default function Dashboard() {
       {/* ═══════════ الخريطة الإدراكية ═══════════ */}
       {tab === "perceptual" && (
         <>
-          <SectionTitle icon="🗺️" text="الخريطة الإدراكية — Perceptual Map" />
+          <SectionTitle icon="🗺️" text="الخريطة الإدراكية" />
           <ChartCard>
             <p style={{ fontSize: 13, color: "#6B7280", margin: "0 0 16px", lineHeight: 1.8, textAlign: "center" }}>
               كل نقطة تمثل منصة بناءً على تقييم المستجيبين.
-              <br />كل ما كانت المنصة <strong style={{ color: "#059669" }}>أقرب لليمين الأسفل</strong> كانت أفضل.
+              <br />كل ما كانت المنصة <strong style={{ color: "#059669" }}>أقرب لليمين الأعلى</strong> كانت أفضل.
             </p>
 
             {/* فلتر المنصات */}
@@ -496,21 +496,21 @@ export default function Dashboard() {
             <div style={{ position: "relative", width: "100%", maxWidth: 500, margin: "16px auto 20px", aspectRatio: "1/1" }}>
 
               {/* الأرباع الأربعة */}
-              <div style={{ position: "absolute", top: 0, right: 0, width: "50%", height: "50%", background: "#EEF2FF", borderRadius: "0 14px 0 0", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", opacity: 0.7 }}>
-                <span style={{ fontSize: 18 }}>💎</span>
-                <span style={{ fontSize: 11, fontWeight: 700, color: "#6366F1" }}>بريميوم</span>
-              </div>
-              <div style={{ position: "absolute", top: 0, left: 0, width: "50%", height: "50%", background: "#FEF2F2", borderRadius: "14px 0 0 0", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", opacity: 0.7 }}>
-                <span style={{ fontSize: 18 }}>❌</span>
-                <span style={{ fontSize: 11, fontWeight: 700, color: "#EF4444" }}>ضعيفة</span>
-              </div>
-              <div style={{ position: "absolute", bottom: 0, right: 0, width: "50%", height: "50%", background: "#F0FDF4", borderRadius: "0 0 14px 0", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", opacity: 0.7 }}>
+              <div style={{ position: "absolute", top: 0, right: 0, width: "50%", height: "50%", background: "#F0FDF4", borderRadius: "0 14px 0 0", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", opacity: 0.7 }}>
                 <span style={{ fontSize: 18 }}>⭐</span>
                 <span style={{ fontSize: 11, fontWeight: 700, color: "#059669" }}>الأفضل قيمة</span>
               </div>
-              <div style={{ position: "absolute", bottom: 0, left: 0, width: "50%", height: "50%", background: "#FFFBEB", borderRadius: "0 0 0 14px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", opacity: 0.7 }}>
+              <div style={{ position: "absolute", top: 0, left: 0, width: "50%", height: "50%", background: "#FFFBEB", borderRadius: "14px 0 0 0", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", opacity: 0.7 }}>
                 <span style={{ fontSize: 18 }}>⚠️</span>
                 <span style={{ fontSize: 11, fontWeight: 700, color: "#D97706" }}>تحتاج تحسين</span>
+              </div>
+              <div style={{ position: "absolute", bottom: 0, right: 0, width: "50%", height: "50%", background: "#EEF2FF", borderRadius: "0 0 14px 0", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", opacity: 0.7 }}>
+                <span style={{ fontSize: 18 }}>💎</span>
+                <span style={{ fontSize: 11, fontWeight: 700, color: "#6366F1" }}>بريميوم</span>
+              </div>
+              <div style={{ position: "absolute", bottom: 0, left: 0, width: "50%", height: "50%", background: "#FEF2F2", borderRadius: "0 0 0 14px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", opacity: 0.7 }}>
+                <span style={{ fontSize: 18 }}>❌</span>
+                <span style={{ fontSize: 11, fontWeight: 700, color: "#EF4444" }}>ضعيفة</span>
               </div>
 
               {/* خطوط المحاور */}
@@ -527,7 +527,7 @@ export default function Dashboard() {
                   <div key={i} style={{
                     position: "absolute",
                     left: xPct + "%",
-                    top: (100 - yPct) + "%",
+                    top: yPct + "%",
                     transform: "translate(-50%, -50%)",
                     zIndex: 2,
                     display: "flex", flexDirection: "column", alignItems: "center",
